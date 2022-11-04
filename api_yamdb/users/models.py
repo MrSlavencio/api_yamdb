@@ -16,7 +16,23 @@ class RoleChoice(Enum):
 
 
 class User(AbstractUser):
-    email = models.EmailField(_('email address'), unique=True,)
+    username = models.CharField(
+        _('Имя пользователя'),
+        max_length=150,
+        unique=True,
+        help_text=_("""Обязательное поле. 150 символов или меньше.
+        Только буквы, цифры или символы @/./+/-/_"""),
+        validators=[AbstractUser.username_validator],
+        error_messages={
+            'unique': _("Пользователь с таким именем уже существует"),
+        },
+    )
+    email = models.EmailField(
+        _('Адрес электронной почты'),
+        unique=True,
+        max_length=254,)
+    first_name = models.CharField(_('Имя'), max_length=150, blank=True)
+    last_name = models.CharField(_('Фамилия'), max_length=150, blank=True)
     role = models.TextField(
         choices=RoleChoice.choices(),
         default=RoleChoice.USER,
@@ -26,3 +42,7 @@ class User(AbstractUser):
         blank=True
     )
     REQUIRED_FIELDS = ["email", ]
+
+    class Meta:
+        verbose_name = _('Пользователь')
+        verbose_name_plural = _('Пользователи')
