@@ -30,6 +30,7 @@ class Titles(models.Model):
     year = models.IntegerField()
     category = models.ForeignKey(
         Categories,
+        db_column='category',
         verbose_name='Категория',
         blank=True,
         null=True,
@@ -69,6 +70,7 @@ class Genres(models.Model):
 class GenreTitle(models.Model):
     title_id=models.ForeignKey(
         Titles,
+        db_column='title_id',
         verbose_name='Произведение',
         on_delete=models.CASCADE,
         related_name='title',
@@ -76,6 +78,7 @@ class GenreTitle(models.Model):
     )
     genre_id=models.ForeignKey(
         Genres,
+        db_column='genre_id',
         verbose_name='Жанр',
         on_delete=models.CASCADE,
         related_name='genre',
