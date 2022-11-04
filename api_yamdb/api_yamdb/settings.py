@@ -17,6 +17,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'reviews.apps.ReviewsConfig',
     'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
     'db_uploading.apps.DbUploadingConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -104,3 +105,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+
+
+# Set custom user model
+
+AUTH_USER_MODEL = 'users.User'
