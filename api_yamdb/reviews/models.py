@@ -84,6 +84,6 @@ class GenreTitle(models.Model):
         related_name='genre',
         help_text='Жанр произведения'
     )
-    
+
     def __str__(self):
         return self.title_id.name + '&' + self.genre_id.name

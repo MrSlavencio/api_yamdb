@@ -14,7 +14,7 @@ uploading_tables = {
     'genre.csv': 'reviews_genres',
     #'review.csv': '',
     'titles.csv': 'reviews_titles',
-    #'users.csv': '',
+    'users.csv': 'users_user',
 }
 
 
