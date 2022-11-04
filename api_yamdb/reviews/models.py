@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 
 class Categories(models.Model):
@@ -87,3 +88,18 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return self.title_id.name + '&' + self.genre_id.name
+
+class Reviews(models.Model):
+    text=models.TextField()
+    title=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
+    author=models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+
+    class Meta:
+        constraints=[
+            models.UniqueConstraint(fields=['author', 'title'], name='unique_author_title')
+        ]
+
+class Comments(models.Model):
+    title=models.ForeignKey(Titles, on_delete=models.CASCADE)
+    review=models.ForeignKey(Reviews, on_delete=models.CASCADE)
+    author=models.ForeignKey(User, on_delete=models.CASCADE)
