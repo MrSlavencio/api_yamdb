@@ -1,5 +1,7 @@
 from django.db import models
+
 from users.models import User
+
 
 
 class Categories(models.Model):
@@ -93,13 +95,19 @@ class Reviews(models.Model):
     text=models.TextField()
     title=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
     author=models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    pub_date=models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints=[
             models.UniqueConstraint(fields=['author', 'title'], name='unique_author_title')
         ]
+        ordering=('-pub_date',)
 
 class Comments(models.Model):
     title=models.ForeignKey(Titles, on_delete=models.CASCADE)
     review=models.ForeignKey(Reviews, on_delete=models.CASCADE)
     author=models.ForeignKey(User, on_delete=models.CASCADE)
+    pub_date=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering=('-pub_date',)
