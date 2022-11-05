@@ -1,6 +1,7 @@
 from django.db import models
 
 from users.models import User
+from .validators import validate_score
 
 
 
@@ -92,9 +93,10 @@ class GenreTitle(models.Model):
         return self.title_id.name + '&' + self.genre_id.name
 
 class Reviews(models.Model):
+    title_id=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
     text=models.TextField()
-    title=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
     author=models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    score=models.IntegerField(validators=[validate_score])
     pub_date=models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -104,8 +106,8 @@ class Reviews(models.Model):
         ordering=('-pub_date',)
 
 class Comments(models.Model):
-    title=models.ForeignKey(Titles, on_delete=models.CASCADE)
-    review=models.ForeignKey(Reviews, on_delete=models.CASCADE)
+    review_id=models.ForeignKey(Reviews, on_delete=models.CASCADE)
+    text=models.TextField()
     author=models.ForeignKey(User, on_delete=models.CASCADE)
     pub_date=models.DateTimeField(auto_now_add=True)
 
