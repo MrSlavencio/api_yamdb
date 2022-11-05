@@ -1,5 +1,9 @@
 from django.db import models
 
+from users.models import User
+from .validators import validate_score
+
+
 
 class Categories(models.Model):
     name = models.CharField(
@@ -87,3 +91,25 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return self.title_id.name + '&' + self.genre_id.name
+
+class Reviews(models.Model):
+    title_id=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
+    text=models.TextField()
+    author=models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    score=models.IntegerField(validators=[validate_score])
+    pub_date=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints=[
+            models.UniqueConstraint(fields=['author', 'title'], name='unique_author_title')
+        ]
+        ordering=('-pub_date',)
+
+class Comments(models.Model):
+    review_id=models.ForeignKey(Reviews, on_delete=models.CASCADE)
+    text=models.TextField()
+    author=models.ForeignKey(User, on_delete=models.CASCADE)
+    pub_date=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering=('-pub_date',)
