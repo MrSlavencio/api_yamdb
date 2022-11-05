@@ -110,3 +110,16 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 # Set custom user model
 
 AUTH_USER_MODEL = 'users.User'
+
+# Email emulatuion
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+# DRF setup
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}
