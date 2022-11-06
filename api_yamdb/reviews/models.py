@@ -5,7 +5,7 @@ from .validators import validate_score
 
 
 
-class Categories(models.Model):
+class Category(models.Model):
     name = models.CharField(
         verbose_name='Категория',
         max_length=200,
@@ -25,33 +25,7 @@ class Categories(models.Model):
         return self.name
 
 
-class Titles(models.Model):
-    name = models.CharField(
-        verbose_name='Произведение',
-        max_length=200,
-        help_text='Название произведения'
-    )
-    year = models.IntegerField()
-    category = models.ForeignKey(
-        Categories,
-        db_column='category',
-        verbose_name='Категория',
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name='category',
-        help_text='Категория, к которой относится произведение'
-    )
-
-    class Meta:
-        verbose_name = 'Произведение'
-        verbose_name_plural = 'Произведения'
-
-    def __str__(self):
-        return self.name
-
-
-class Genres(models.Model):
+class Genre(models.Model):
     name = models.CharField(
         verbose_name='Жанр',
         max_length=200,
@@ -71,27 +45,46 @@ class Genres(models.Model):
         return self.name
 
 
-class GenreTitle(models.Model):
-    title_id=models.ForeignKey(
-        Titles,
-        db_column='title_id',
+class Title(models.Model):
+    name = models.CharField(
         verbose_name='Произведение',
-        on_delete=models.CASCADE,
-        related_name='title',
-        help_text='Произведение определенного жанра'
+        max_length=200,
+        help_text='Название произведения'
     )
-    genre_id=models.ForeignKey(
-        Genres,
-        db_column='genre_id',
-        verbose_name='Жанр',
-        on_delete=models.CASCADE,
-        related_name='genre',
-        help_text='Жанр произведения'
+    year = models.IntegerField()
+    category = models.ForeignKey(
+        Category,
+        db_column='category',
+        verbose_name='Категория',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='category',
+        help_text='Категория, к которой относится произведение'
     )
+    description = models.TextField(
+        verbose_name='Описание',
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text='Описание произведения'
+    )
+    genre = models.ManyToManyField(
+        Genre,
+        related_name='titles',
+        verbose_name='Жанры',
+        help_text='Жанры произведения'
+    )
+
+    class Meta:
+        verbose_name = 'Произведение'
+        verbose_name_plural = 'Произведения'
 
     def __str__(self):
-        return self.title_id.name + '&' + self.genre_id.name
+        return self.name
 
+
+"""
 class Reviews(models.Model):
     title_id=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
     text=models.TextField()
@@ -113,3 +106,4 @@ class Comments(models.Model):
 
     class Meta:
         ordering=('-pub_date',)
+"""
