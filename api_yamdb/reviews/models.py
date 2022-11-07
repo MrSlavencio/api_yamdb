@@ -84,9 +84,9 @@ class Title(models.Model):
         return self.name
 
 
-"""
-class Reviews(models.Model):
-    title_id=models.ForeignKey(Titles, on_delete=models.CASCADE, related_name='reviews')
+
+class Review(models.Model):
+    title_id=models.ForeignKey(Title, on_delete=models.CASCADE, related_name='reviews')
     text=models.TextField()
     author=models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     score=models.IntegerField(validators=[validate_score])
@@ -94,16 +94,16 @@ class Reviews(models.Model):
 
     class Meta:
         constraints=[
-            models.UniqueConstraint(fields=['author', 'title'], name='unique_author_title')
+            models.UniqueConstraint(fields=['author', 'title_id'], name='unique_author_title')
         ]
         ordering=('-pub_date',)
 
-class Comments(models.Model):
-    review_id=models.ForeignKey(Reviews, on_delete=models.CASCADE)
+class Comment(models.Model):
+    review_id=models.ForeignKey(Review, on_delete=models.CASCADE)
     text=models.TextField()
     author=models.ForeignKey(User, on_delete=models.CASCADE)
     pub_date=models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering=('-pub_date',)
-"""
+
