@@ -5,6 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+from .validators import username_not_me_validator
+
 CONFIRMATION_CODE_LENGTH = 255
 
 
@@ -26,7 +28,8 @@ class User(AbstractUser):
         unique=True,
         help_text=_("""Обязательное поле. 150 символов или меньше.
         Только буквы, цифры или символы @/./+/-/_"""),
-        validators=[AbstractUser.username_validator, ],
+        validators=[AbstractUser.username_validator,
+                    username_not_me_validator, ],
         error_messages={
             'unique': _("Пользователь с таким именем уже существует"),
         },
