@@ -1,200 +1,49 @@
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-# api_yamdb
-api_yamdb
+## Как развернуть проект
 
-api_yamdb
+Клонировать репозиторий и перейти в него в командной строке:
 
-api_yamdb
+```
+git clone https://github.com/MrSlavencio/api_final_yatube.git
+```
 
-api_yamdb
+```
+cd api_final_yatube
+```
 
-api_yamdb
+Cоздать и активировать виртуальное окружение:
 
-api_yamdb
+```
+python3 -m venv venv
+```
 
-api_yamdb
+```
+source venv/bin/activate
+```
 
-api_yamdb
+```
+python3 -m pip install --upgrade pip
+```
 
-api_yamdb
+Установить зависимости из файла requirements.txt:
 
-api_yamdb
+```
+pip install -r requirements.txt
+```
 
-api_yamdb
+Выполнить миграции:
 
-api_yamdb
+```
+python3 manage.py migrate
+```
 
-api_yamdb
+Запустить проект:
 
-api_yamdb
+```
+python3 manage.py runserver
+```
 
-api_yamdb
+Выполнить миграции:
 
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
-
-api_yamdb
+```
+python3 manage.py migrate
+```
