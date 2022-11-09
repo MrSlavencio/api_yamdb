@@ -1,28 +1,32 @@
-from enum import Enum
-
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.tokens import default_token_generator as tok_gen
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-
-class RoleChoice(Enum):
-    ADMIN = "admin"
-    MODERATOR = "moderator"
-    USER = "user"
-
-    @classmethod
-    def choices(cls):
-        return tuple((c.name, c.value) for c in cls)
+CONFIRMATION_CODE_LENGTH = 255
 
 
 class User(AbstractUser):
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+
+    ROLE_CHOICES = (
+        (USER, 'Пользователь'),
+        (MODERATOR, 'Модератор'),
+        (ADMIN, 'Администратор'),
+    )
+    MAX_ROLE_LENGTH = max(len(c) for c, _ in ROLE_CHOICES)
+
     username = models.CharField(
         _('Имя пользователя'),
         max_length=150,
         unique=True,
         help_text=_("""Обязательное поле. 150 символов или меньше.
         Только буквы, цифры или символы @/./+/-/_"""),
-        validators=[AbstractUser.username_validator],
+        validators=[AbstractUser.username_validator, ],
         error_messages={
             'unique': _("Пользователь с таким именем уже существует"),
         },
@@ -33,32 +37,52 @@ class User(AbstractUser):
         max_length=254,)
     first_name = models.CharField(_('Имя'), max_length=150, blank=True)
     last_name = models.CharField(_('Фамилия'), max_length=150, blank=True)
-    role = models.TextField(
-        choices=RoleChoice.choices(),
-        default=RoleChoice.USER,
+    role = models.CharField(
+        max_length=MAX_ROLE_LENGTH,
+        choices=ROLE_CHOICES,
+        default=USER,
     )
     bio = models.TextField(
         _('Биография'),
-        blank=True
+        blank=True,
     )
+    confirmation_code = models.CharField(
+        'Код подтверждения',
+        max_length=CONFIRMATION_CODE_LENGTH,
+        blank=True,
+    )
+
     REQUIRED_FIELDS = ["email", ]
-
-    @property
-    def is_user(self):
-        return self.role == RoleChoice.USER
-
-    @property
-    def is_admin(self):
-        return self.role == RoleChoice.ADMIN
-
-    @property
-    def is_moderator(self):
-        return self.role == RoleChoice.MODERATOR
 
     class Meta:
         ordering = ("id", )
         verbose_name = _('Пользователь')
         verbose_name_plural = _('Пользователи')
 
+    def save(self, *args, **kwargs):
+        if self.is_admin:
+            self.is_staff = True
+        super(User, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.username
+
+    @ property
+    def is_user(self):
+        return self.role == self.USER
+
+    @ property
+    def is_admin(self):
+        return self.role == self.ADMIN
+
+    @ property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
+
+
+@receiver(post_save, sender=User)
+def user_created(sender, instance, created, **kwargs):
+    if created:
+        confirmation_code = tok_gen.make_token(instance)
+        instance.confirmation_code = confirmation_code
+        instance.save()
