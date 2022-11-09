@@ -8,9 +8,11 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from .mixins import ModelMixinSet
+from .filters import TitleFilter
 from reviews.models import Category, Genre, Title
 from users.models import User
+from users.permissions import IsAdminUserOrReadOnly
 from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleReadSerializer,
@@ -22,32 +24,32 @@ from .serializers import (CategorySerializer,
                           RegisrationSerializer,)
 
 
-class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+class CategoryViewSet(ModelMixinSet):
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = 'slug'
 
 
-class GenreViewSet(viewsets.ReadOnlyModelViewSet):
+class GenreViewSet(ModelMixinSet):
 
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
 
-    queryset = Title.objects.all()
+    queryset = Title.objects.all() ### Добавить столбец со столбцом с средней оценкой
+    permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = (
-        'category',
-        'genre',
-        'name',
-        'year',
-    )
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
