@@ -47,3 +47,16 @@ python3 manage.py runserver
 ```
 python3 manage.py migrate
 ```
+
+## Как наполнить SQL-БД тестовыми данными
+В командной строке выполните команду:
+
+```
+python manage.py upload_demo_data --u
+```
+
+Чтобы очистить таблицы проекта от данных, выполните команду:
+
+```
+python manage.py upload_demo_data --c
+```
