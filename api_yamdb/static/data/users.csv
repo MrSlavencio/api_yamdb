@@ -1,6 +1,6 @@
-id,password,is_superuser,is_staff,is_active,date_joined,username,email,role,bio,first_name,last_name
-100,abc,0,0,1,2022-08-27 15:01:11.904182,bingobongo,bingobongo@yamdb.fake,user,Биография Пушкина,Александр,Пушкин
-101,def,0,0,1,2022-08-27 15:01:11.904182,capt_obvious,capt_obvious@yamdb.fake,admin,Биография Крылова,Иван,Крылов
-102,ghi,0,0,1,2022-08-27 15:01:11.904182,faust,faust@yamdb.fake,user,Биография Есенина,Сергей,Есенин
-103,jkl,0,0,1,2022-08-27 15:01:11.904182,reviewer,reviewer@yamdb.fake,user,Биография Горького,Максим,Горький
-104,mno,0,0,1,2022-08-27 15:01:11.904182,angry,angry@yamdb.fake,moderator,Биография Достоевского,Федор,Достоевский
+id,password,is_superuser,is_staff,is_active,date_joined,username,email,role,bio,first_name,last_name,confirmation_code
+100,abc,0,0,1,2022-08-27 15:01:11.904182,bingobongo,bingobongo@yamdb.fake,user,Биография Пушкина,Александр,Пушкин,AAA
+101,def,0,0,1,2022-08-27 15:01:11.904182,capt_obvious,capt_obvious@yamdb.fake,admin,Биография Крылова,Иван,Крылов,AAA
+102,ghi,0,0,1,2022-08-27 15:01:11.904182,faust,faust@yamdb.fake,user,Биография Есенина,Сергей,Есенин,AAA
+103,jkl,0,0,1,2022-08-27 15:01:11.904182,reviewer,reviewer@yamdb.fake,user,Биография Горького,Максим,Горький,AAA
+104,mno,0,0,1,2022-08-27 15:01:11.904182,angry,angry@yamdb.fake,moderator,Биография Достоевского,Федор,Достоевский,AAA

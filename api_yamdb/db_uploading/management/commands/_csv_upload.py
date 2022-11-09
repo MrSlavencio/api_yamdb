@@ -9,12 +9,12 @@ sql_conn = sqlite3.connect(db_path)
 
 uploading_tables = {
     'category.csv': 'reviews_category',
-    #'comments.csv': '',
+    'comments.csv': 'reviews_comment',
     'genre_title.csv': 'reviews_title_genre',
     'genre.csv': 'reviews_genre',
-    #'review.csv': '',
+    'review.csv': 'reviews_review',
     'titles.csv': 'reviews_title',
-    #'users.csv': 'users_user',
+    'users.csv': 'users_user',
 }
 
 
