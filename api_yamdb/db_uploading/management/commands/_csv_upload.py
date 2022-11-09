@@ -8,12 +8,12 @@ db_path = os.path.join(os.getcwd(), 'db.sqlite3')
 sql_conn = sqlite3.connect(db_path)
 
 uploading_tables = {
-    'category.csv': 'reviews_categories',
+    'category.csv': 'reviews_category',
     #'comments.csv': '',
-    'genre_title.csv': 'reviews_genretitle',
-    'genre.csv': 'reviews_genres',
+    'genre_title.csv': 'reviews_title_genre',
+    'genre.csv': 'reviews_genre',
     #'review.csv': '',
-    'titles.csv': 'reviews_titles',
+    'titles.csv': 'reviews_title',
     'users.csv': 'users_user',
 }
 
