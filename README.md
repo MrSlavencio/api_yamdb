@@ -60,3 +60,24 @@ python manage.py upload_demo_data --u
 ```
 python manage.py upload_demo_data --c
 ```
+
+
+## Используемые библиотеки
+
+В проекте используются следующие зависимости:
+* requests==2.26.0
+* django==2.2.16
+* djangorestframework==3.12.4
+* PyJWT==2.1.0
+* pytest==6.2.4
+* pytest-django==4.4.0
+* pytest-pythonpath==0.7.3
+* pandas==1.3.5
+* djangorestframework-simplejwt==4.7.2
+* django-filter==2.4.0
+
+## Rest-API
+
+Документацию по API Вы можете прочитать, запустив проект(```
+python3 manage.py runserver
+```) по ссылке ```/redoc/```
