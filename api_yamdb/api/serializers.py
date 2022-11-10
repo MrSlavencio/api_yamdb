@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 
-from reviews.models import Category, Genre, Title, Review
 from users.models import User
+from reviews.models import Category, Genre, Title, Review, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -52,8 +54,18 @@ class ReviewsSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
+    def validate(self, data):
+        request=self.context['request']
+        author=request.user
+        title_id=self.context['view'].kwargs.get('title_id')
+        title=get_object_or_404(Title,id=title_id)
+        if (request.method not in ('GET', 'PATCH')
+        and Review.objects.filter(title=title, author=author).exists()):
+            raise ValidationError('Пользователь может оставлять только один отзыв на произведение')
+        return data
+    
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'text','author', 'score', 'pub_date')
         model = Review
 
 
@@ -112,3 +124,14 @@ class UserSerializer(serializers.ModelSerializer):
             'bio',
             'role',)
         read_only_fields = ('role',)
+
+
+class CommentsSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username',
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date')
+        model = Comment
