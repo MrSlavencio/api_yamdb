@@ -1,13 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.tokens import default_token_generator as tok_gen
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from .validators import username_not_me_validator
-
-CONFIRMATION_CODE_LENGTH = 255
 
 
 class User(AbstractUser):
@@ -20,14 +16,19 @@ class User(AbstractUser):
         (MODERATOR, 'Модератор'),
         (ADMIN, 'Администратор'),
     )
+
+    CONFIRMATION_CODE_LENGTH = 255
     MAX_ROLE_LENGTH = max(len(c) for c, _ in ROLE_CHOICES)
 
     username = models.CharField(
         _('Имя пользователя'),
         max_length=150,
         unique=True,
-        help_text=_("""Обязательное поле. 150 символов или меньше.
-        Только буквы, цифры или символы @/./+/-/_"""),
+        help_text=_(
+            'Обязательное поле. 150 символов или меньше.'
+            'Только буквы, цифры или символы @/./+/-/_.'
+            'Не может быть <me>.'
+        ),
         validators=[AbstractUser.username_validator,
                     username_not_me_validator, ],
         error_messages={
@@ -63,6 +64,8 @@ class User(AbstractUser):
         verbose_name_plural = _('Пользователи')
 
     def save(self, *args, **kwargs):
+        confirmation_code = tok_gen.make_token(self)
+        self.confirmation_code = confirmation_code
         if self.is_admin:
             self.is_staff = True
         super(User, self).save(*args, **kwargs)
@@ -81,11 +84,3 @@ class User(AbstractUser):
     @ property
     def is_moderator(self):
         return self.role == self.MODERATOR
-
-
-@receiver(post_save, sender=User)
-def user_created(sender, instance, created, **kwargs):
-    if created:
-        confirmation_code = tok_gen.make_token(instance)
-        instance.confirmation_code = confirmation_code
-        instance.save()
