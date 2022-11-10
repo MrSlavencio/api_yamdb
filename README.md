@@ -119,3 +119,5 @@ python3 manage.py runserver
 
 Авторы проекта - студенты когорты 44 факультета Бэкенд разработки Яндекс-практикума.</br>
 * **Кобзев Вячеслав** - тимлид [*Git - MrSlavencio*](https://github.com/MrSlavencio "MrSlavencio")
+* **Осипенков Денис** - участник [*Git - DannyDies*](https://github.com/DannyDies "DannyDies")
+* **Костюнина Светлана** - участник [*Git - Kostiunina*](https://github.com/Kostiunina "Kostiunina")
