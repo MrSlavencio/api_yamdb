@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from users.models import User
 from reviews.models import Category, Genre, Title, Review
+from users.models import User
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -58,7 +58,7 @@ class ReviewsSerializer(serializers.ModelSerializer):
 
 
 class RegisrationSerializer(serializers.ModelSerializer):
-
+    """Для регистрации нового пользователя."""
     class Meta:
         model = User
         fields = (
@@ -68,6 +68,7 @@ class RegisrationSerializer(serializers.ModelSerializer):
 
 
 class GetTokenSerializer(serializers.ModelSerializer):
+    """Для получения и обновления токена пользователя."""
     username = serializers.CharField(
         required=True)
     confirmation_code = serializers.CharField(
@@ -82,6 +83,9 @@ class GetTokenSerializer(serializers.ModelSerializer):
 
 
 class StuffUserSerializer(serializers.ModelSerializer):
+    """
+    Для просмотра и изменения данных пользователей админом.
+    """
     class Meta:
         model = User
         fields = (
@@ -94,6 +98,10 @@ class StuffUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    Для просмотра и изменения своих данных пользователем.
+    Для не админов.
+    """
     class Meta:
         model = User
         fields = (

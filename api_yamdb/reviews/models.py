@@ -4,7 +4,6 @@ from users.models import User
 from .validators import validate_score
 
 
-
 class Category(models.Model):
     name = models.CharField(
         verbose_name='Категория',
@@ -85,29 +84,33 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    title_id=models.ForeignKey(
+    title_id = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         db_column='title_id',
     )
-    text=models.TextField()
-    author=models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews', db_column='author',)
-    score=models.IntegerField(validators=[validate_score])
-    pub_date=models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reviews', db_column='author',)
+    score = models.IntegerField(validators=[validate_score])
+    pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        constraints=[
-            models.UniqueConstraint(fields=['author', 'title_id'], name='unique_author_title')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title_id'], name='unique_author_title')
         ]
-        ordering=('-pub_date',)
+        ordering = ('-pub_date',)
 
 
 class Comment(models.Model):
-    review_id=models.ForeignKey(Review, on_delete=models.CASCADE, db_column='review_id',)
-    text=models.TextField()
-    author=models.ForeignKey(User, on_delete=models.CASCADE, db_column='author',)
-    pub_date=models.DateTimeField(auto_now_add=True)
+    review_id = models.ForeignKey(
+        Review, on_delete=models.CASCADE, db_column='review_id',)
+    text = models.TextField()
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, db_column='author',)
+    pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering=('-pub_date',)
+        ordering = ('-pub_date',)
