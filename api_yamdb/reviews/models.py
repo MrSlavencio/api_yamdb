@@ -84,33 +84,32 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    title_id = models.ForeignKey(
+    title=models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        related_name='reviews',
-        db_column='title_id',
+        related_name='reviews'
     )
-    text = models.TextField()
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='reviews', db_column='author',)
-    score = models.IntegerField(validators=[validate_score])
-    pub_date = models.DateTimeField(auto_now_add=True)
+    text=models.TextField()
+    author=models.ForeignKey(User, on_delete=models.CASCADE, 
+    related_name='reviews',
+    db_column='author',)
+    score=models.IntegerField(validators=[validate_score])
+    pub_date=models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['author', 'title_id'], name='unique_author_title')
+        constraints=[
+            models.UniqueConstraint(fields=['author', 'title'], name='unique_author_title')
         ]
         ordering = ('-pub_date',)
 
 
 class Comment(models.Model):
-    review_id = models.ForeignKey(
-        Review, on_delete=models.CASCADE, db_column='review_id',)
-    text = models.TextField()
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, db_column='author',)
-    pub_date = models.DateTimeField(auto_now_add=True)
+    review=models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+    text=models.TextField()
+    author=models.ForeignKey(User, on_delete=models.CASCADE, 
+    db_column='author', 
+    related_name='comments')
+    pub_date=models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-pub_date',)
