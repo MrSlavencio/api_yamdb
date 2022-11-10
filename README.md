@@ -83,7 +83,7 @@ python manage.py upload_demo_data --c
     "confirmation_code": "65r-4913ecce962f48e05657"
 }
 ```
-#### POST-запрос на `/api/v1/users/me/`
+#### PATCH-запрос на `/api/v1/users/me/`
 Для доступа используем токен полученный в результате предыдущего запроса.
 ```json
 {
