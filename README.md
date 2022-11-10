@@ -61,6 +61,39 @@ python manage.py upload_demo_data --u
 python manage.py upload_demo_data --c
 ```
 
+## Алгоритм регистрации пользователей
+
+- Пользователь отправляет POST-запрос на добавление нового пользователя с параметрами `email` и `username` на эндпоинт `/api/v1/auth/signup/`.
+- YaMDB отправляет письмо с кодом подтверждения (confirmation_code) на адрес email.
+- Пользователь отправляет POST-запрос с параметрами username и confirmation_code на эндпоинт `/api/v1/auth/token/`, в ответе на запрос ему приходит token (JWT-токен).
+- При желании пользователь отправляет PATCH-запрос на эндпоинт `/api/v1/users/me/` и заполняет поля в своём профайле (описание полей — в документации).
+
+### Пример регистрации
+#### POST-запрос на `/api/v1/auth/signup/`
+```json
+{
+    "email": "user@mail.ru",
+    "username": "user"
+}
+```
+#### POST-запрос на `/api/v1/auth/token/`
+```json
+{
+    "username": "user",
+    "confirmation_code": "65r-4913ecce962f48e05657"
+}
+```
+#### POST-запрос на `/api/v1/users/me/`
+Для доступа используем токен полученный в результате предыдущего запроса.
+```json
+{
+    "username": "user",
+    "email": "new-user-mail@mail.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "Обычный пользователь. Не умею менять свою роль :(",
+}
+```
 
 ## Используемые библиотеки
 
