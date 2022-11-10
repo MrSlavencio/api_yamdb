@@ -72,6 +72,12 @@ class ReviewsViewSet(viewsets.ModelViewSet):
 
 
 class RegistrationView(APIView):
+    """
+    Регистрация нового пользователя. Доступ для всех.
+    Отправляется POST запрос с параметрами email и username.
+    username 'me' запрещен.
+    На указанный email отправляется код подтверждения.
+    """
 
     permission_classes = (AllowAny,)
 
@@ -102,6 +108,12 @@ class RegistrationView(APIView):
 
 
 class GetTokenView(APIView):
+    """
+    Получение или обновление токена для зарегистрированного пользователя.
+    Отправляется POST запрос с параметрами username и confirmation_code,
+    который был направлен на указанный email.
+    Если пользователь существует и код верен, то в ответе будет токен.
+    """
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -124,6 +136,12 @@ class GetTokenView(APIView):
 
 
 class UsersViewSet(viewsets.ModelViewSet):
+    """
+    Просмотр и изменение данных пользователя.
+    Полный доступ для администратора.
+    Пользователи имеют доступ только к своим данным.
+    Доступ на смену роли пользователя есть только у админа.
+    """
 
     queryset = User.objects.all()
     serializer_class = StuffUserSerializer
