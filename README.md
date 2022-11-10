@@ -114,3 +114,8 @@ python manage.py upload_demo_data --c
 Документацию по API Вы можете прочитать, запустив проект(```
 python3 manage.py runserver
 ```) по ссылке ```/redoc/```
+
+## Об авторах
+
+Авторы проекта - студенты когорты 44 факультета Бэкенд разработки Яндекс-практикума.</br>
+* **Кобзев Вячеслав** - тимлид [*Git - MrSlavencio*](https://github.com/MrSlavencio "MrSlavencio")
