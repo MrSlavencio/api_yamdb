@@ -17,9 +17,6 @@ class User(AbstractUser):
         (ADMIN, 'Администратор'),
     )
 
-    CONFIRMATION_CODE_LENGTH = 255
-    MAX_ROLE_LENGTH = max(len(c) for c, _ in ROLE_CHOICES)
-
     username = models.CharField(
         _('Имя пользователя'),
         max_length=150,
@@ -42,7 +39,7 @@ class User(AbstractUser):
     first_name = models.CharField(_('Имя'), max_length=150, blank=True)
     last_name = models.CharField(_('Фамилия'), max_length=150, blank=True)
     role = models.CharField(
-        max_length=MAX_ROLE_LENGTH,
+        max_length=max(len(c) for c, _ in ROLE_CHOICES),
         choices=ROLE_CHOICES,
         default=USER,
     )
@@ -52,7 +49,7 @@ class User(AbstractUser):
     )
     confirmation_code = models.CharField(
         'Код подтверждения',
-        max_length=CONFIRMATION_CODE_LENGTH,
+        max_length=255,
         blank=True,
     )
 

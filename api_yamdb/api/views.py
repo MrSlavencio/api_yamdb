@@ -46,7 +46,7 @@ class GenreViewSet(ModelMixinSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
 
-    queryset = Title.objects.all() ### Добавить столбец со столбцом с средней оценкой
+    queryset = Title.objects.all()  # Добавить столбец со столбцом с средней оценкой
     permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
@@ -124,6 +124,7 @@ class GetTokenView(APIView):
 
 
 class UsersViewSet(viewsets.ModelViewSet):
+
     queryset = User.objects.all()
     serializer_class = StuffUserSerializer
     permission_classes = (IsAuthenticated, IsAdminUser,)
