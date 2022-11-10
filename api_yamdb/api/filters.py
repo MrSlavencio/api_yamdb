@@ -17,7 +17,7 @@ class TitleFilter(filters.FilterSet):
     year = filters.NumberFilter(
         field_name='year',
     )
-    
+
     class Meta:
         model = Title
         fields = ('category', 'genre', 'name', 'year')

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.core.mail import EmailMessage
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Avg
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -13,7 +14,9 @@ from .mixins import ModelMixinSet
 from .filters import TitleFilter
 from reviews.models import Category, Genre, Title, Review
 from users.models import User
-from users.permissions import IsAdminUserOrReadOnly, AdminModeratorAuthorPermission
+from users.permissions import (
+    IsAdminUserOrReadOnly, AdminModeratorAuthorPermission
+)
 from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleReadSerializer,
@@ -48,7 +51,9 @@ class GenreViewSet(ModelMixinSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
 
-    queryset = Title.objects.all()  # Добавить столбец со столбцом с средней оценкой
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')
+    ).all()
     permission_classes = (IsAdminUserOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
@@ -177,15 +182,16 @@ class UsersViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data)
 
+
 class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
     pagination_class = LimitOffsetPagination
     permission_classes = (AdminModeratorAuthorPermission,)
 
     def get_queryset(self):
-        review=get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
         return review.comments.all()
 
     def perform_create(self, serializer):
-        review=get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
         serializer.save(author=self.request.user, review=review)

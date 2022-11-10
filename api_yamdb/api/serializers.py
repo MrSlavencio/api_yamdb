@@ -21,18 +21,23 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
+
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(
         read_only=True,
         many=True
     )
+    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
-        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
         model = Title
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
+
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug'
@@ -55,17 +60,22 @@ class ReviewsSerializer(serializers.ModelSerializer):
     )
 
     def validate(self, data):
-        request=self.context['request']
-        author=request.user
-        title_id=self.context['view'].kwargs.get('title_id')
-        title=get_object_or_404(Title,id=title_id)
-        if (request.method not in ('GET', 'PATCH')
-        and Review.objects.filter(title=title, author=author).exists()):
-            raise ValidationError('Пользователь может оставлять только один отзыв на произведение')
+        request = self.context['request']
+        author = request.user
+        title_id = self.context['view'].kwargs.get('title_id')
+        title = get_object_or_404(Title, id=title_id)
+        if (
+            request.method not in ('GET', 'PATCH')
+            and Review.objects.filter(title=title, author=author).exists()
+        ):
+            raise ValidationError(
+                'Пользователь может оставлять только один '
+                'отзыв на произведение'
+            )
         return data
-    
+
     class Meta:
-        fields = ('id', 'text','author', 'score', 'pub_date')
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
 
