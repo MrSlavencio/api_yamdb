@@ -119,6 +119,33 @@ python manage.py upload_demo_data --c
 ```
 #### GET-запрос на `/api/v1/titles/`
 Получение списка всех произведений
+```response (json)
+{
+    "count": 32,
+    "next": "http://127.0.0.1:8000/api/v1/titles/?limit=5&offset=5",
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "Побег из Шоушенка",
+            "year": 1994,
+            "rating": 10,
+            "description": null,
+            "genre": [
+                {
+                    "name": "Драма",
+                    "slug": "drama"
+                }
+            ],
+            "category": {
+                "name": "Фильм",
+                "slug": "movie"
+            }
+        },
+        ...
+        ]
+}
+```
 
 ## Используемые библиотеки
 
