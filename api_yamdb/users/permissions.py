@@ -2,6 +2,10 @@ from rest_framework import permissions
 
 
 class IsAdminUserOrReadOnly(permissions.BasePermission):
+    """
+    Полный доступ для администратора.
+    Остальные роли доступ только для чтения.
+    """
 
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
@@ -12,6 +16,10 @@ class IsAdminUserOrReadOnly(permissions.BasePermission):
 
 
 class AdminModeratorAuthorPermission(permissions.BasePermission):
+    """
+    Полный доступ для администратора, модератора и автора.
+    В остальных случаях доступ только для чтения.
+    """
 
     def has_permission(self, request, view):
         return (
