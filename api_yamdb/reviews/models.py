@@ -1,7 +1,7 @@
 from django.db import models
 
 from users.models import User
-from .validators import validate_score
+from .validators import validate_score, year_validator, slug_validator
 
 
 class Category(models.Model):
@@ -13,7 +13,8 @@ class Category(models.Model):
     slug = models.SlugField(
         verbose_name='Слаг',
         unique=True,
-        help_text='Адрес для страницы с группой'
+        help_text='Адрес для страницы с группой',
+        validators=[slug_validator]
     )
 
     class Meta:
@@ -33,7 +34,8 @@ class Genre(models.Model):
     slug = models.SlugField(
         verbose_name='Слаг',
         unique=True,
-        help_text='Адрес для страницы с жанром'
+        help_text='Адрес для страницы с жанром',
+        validators=[slug_validator]
     )
 
     class Meta:
@@ -50,7 +52,9 @@ class Title(models.Model):
         max_length=200,
         help_text='Название произведения'
     )
-    year = models.IntegerField()
+    year = models.IntegerField(
+        validators=[year_validator],
+    )
     category = models.ForeignKey(
         Category,
         db_column='category',
