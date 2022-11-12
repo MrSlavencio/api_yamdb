@@ -1,3 +1,5 @@
+import sys
+import logging
 from django.core.management.base import BaseCommand
 from ._csv_upload import clean_db, upload_data
 
@@ -9,17 +11,15 @@ class Command(BaseCommand):
         if options['clean']:
             try:
                 clean_db()
-                print('Models data has been cleaned successfully!')
+                logging.info('Models data has been cleaned successfully!')
             except Exception as e:
-                print('Something went wrong!')
-                print(e)
+                logging.error(f'Models data has not been cleaned: {e}')
         else:
             try:
                 upload_data()
-                print('Models data has been uploaded successfully!')
+                logging.info('Models data has been uploaded successfully!')
             except Exception as e:
-                print('Something went wrong!')
-                print(e)
+                logging.error(f'Models data has not been uploaded: {e}')
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -36,3 +36,11 @@ class Command(BaseCommand):
             default=False,
             help='Deleting data in SQL-DB'
         )
+
+
+logging.basicConfig(
+    format=('%(asctime)s [%(levelname)s] %(message)s'),
+    level=logging.INFO
+)
+
+logging.StreamHandler(sys.stdout)
