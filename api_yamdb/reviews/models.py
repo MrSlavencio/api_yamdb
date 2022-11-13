@@ -100,7 +100,7 @@ class Review(models.Model):
         related_name='reviews',
         db_column='author',
     )
-    score = models.IntegerField(validators=[validate_score])
+    score = models.PositiveSmallIntegerField(validators=[validate_score])
     pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
