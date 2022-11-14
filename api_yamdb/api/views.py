@@ -1,11 +1,14 @@
-from django.shortcuts import get_object_or_404
-from django.core.mail import EmailMessage
 from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.auth.tokens import default_token_generator as tok_gen
+from django.core.mail import EmailMessage
+from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 from django.db.models import Avg
 from rest_framework import filters, status, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -15,15 +18,15 @@ from .filters import TitleFilter
 from reviews.models import Category, Genre, Title, Review
 from users.models import User
 from users.permissions import (
-    IsAdminUserOrReadOnly, AdminModeratorAuthorPermission
+    IsAdminUserOrReadOnly, AdminModeratorAuthorPermission, IsAdminOnly
 )
+
 from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleReadSerializer,
                           TitleWriteSerializer,
                           ReviewsSerializer,
-                          GetTokenSerializer,
-                          StuffUserSerializer,
+                          ConfirmationCodeSerializer,
                           UserSerializer,
                           RegisrationSerializer,
                           CommentsSerializer)
@@ -102,7 +105,13 @@ class RegistrationView(APIView):
     def post(self, request):
         serializer = RegisrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        try:
+            user, _ = User.objects.get_or_create(**serializer.validated_data)
+            confirmation_code = tok_gen.make_token(user)
+            user.confirmation_code = confirmation_code
+        except IntegrityError as e:
+            raise ValidationError(
+                f'Пользователь с таким username или email уже существует: {e}')
         email_body = (
             'Код подтверждения для получения токена для доступа на YaMDb:\n'
             f'{user.confirmation_code}'
@@ -126,7 +135,7 @@ class GetTokenView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        serializer = GetTokenSerializer(data=request.data)
+        serializer = ConfirmationCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         try:
@@ -135,7 +144,7 @@ class GetTokenView(APIView):
             return Response(
                 {'username': 'Пользователь не найден!'},
                 status=status.HTTP_404_NOT_FOUND)
-        if data.get('confirmation_code') == user.confirmation_code:
+        if tok_gen.check_token(user, data.get('confirmation_code')):
             token = RefreshToken.for_user(user).access_token
             return Response({'token': str(token)},
                             status=status.HTTP_201_CREATED)
@@ -153,8 +162,8 @@ class UsersViewSet(viewsets.ModelViewSet):
     """
 
     queryset = User.objects.all()
-    serializer_class = StuffUserSerializer
-    permission_classes = (IsAuthenticated, IsAdminUser,)
+    serializer_class = UserSerializer
+    permission_classes = (IsAuthenticated, IsAdminOnly,)
     lookup_field = 'username'
     filter_backends = (SearchFilter, )
     search_fields = ('username', )
@@ -166,18 +175,15 @@ class UsersViewSet(viewsets.ModelViewSet):
         url_path='me')
     def get_current_user_info(self, request):
         serializer = UserSerializer(request.user)
+        data = request.data
         if request.method == 'PATCH':
-            if request.user.is_admin:
-                serializer = StuffUserSerializer(
-                    request.user,
-                    data=request.data,
-                    partial=True)
-            else:
-                serializer = UserSerializer(
-                    request.user,
-                    data=request.data,
-                    partial=True)
+            serializer = UserSerializer(
+                request.user,
+                data=data,
+                partial=True)
             serializer.is_valid(raise_exception=True)
+            if not request.user.is_admin:
+                serializer.validated_data["role"] = request.user.role
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data)
