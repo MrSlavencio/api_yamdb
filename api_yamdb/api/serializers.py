@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from users.models import User
 from reviews.models import Category, Genre, Title, Review, Comment
@@ -81,6 +82,26 @@ class ReviewsSerializer(serializers.ModelSerializer):
 
 class RegisrationSerializer(serializers.ModelSerializer):
     """Для регистрации нового пользователя."""
+
+    username = serializers.CharField(
+        required=True, max_length=150, validators=[UnicodeUsernameValidator])
+    email = serializers.EmailField(
+        required=True, max_length=254)
+
+    def validate_username(self, value):
+        if value == 'me':
+            raise ValidationError(
+                'Имя пользователя не может быть "me".'
+            )
+        return value
+
+    def validate_email(self, value):
+        lower_email = value.lower()
+        if User.objects.filter(email__iexact=lower_email).exists():
+            raise serializers.ValidationError(
+                "Пользователь с таким email уже существует.")
+        return lower_email
+
     class Meta:
         model = User
         fields = (
@@ -89,7 +110,7 @@ class RegisrationSerializer(serializers.ModelSerializer):
         )
 
 
-class GetTokenSerializer(serializers.ModelSerializer):
+class ConfirmationCodeSerializer(serializers.ModelSerializer):
     """Для получения и обновления токена пользователя."""
     username = serializers.CharField(
         required=True)
@@ -104,7 +125,7 @@ class GetTokenSerializer(serializers.ModelSerializer):
         )
 
 
-class StuffUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """
     Для просмотра и изменения данных пользователей админом.
     """
@@ -119,21 +140,21 @@ class StuffUserSerializer(serializers.ModelSerializer):
             'role',)
 
 
-class UserSerializer(serializers.ModelSerializer):
-    """
-    Для просмотра и изменения своих данных пользователем.
-    Для не админов.
-    """
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'email',
-            'first_name',
-            'last_name',
-            'bio',
-            'role',)
-        read_only_fields = ('role',)
+# class UserSerializer(serializers.ModelSerializer):
+#     """
+#     Для просмотра и изменения своих данных пользователем.
+#     Для не админов.
+#     """
+#     class Meta:
+#         model = User
+#         fields = (
+#             'username',
+#             'email',
+#             'first_name',
+#             'last_name',
+#             'bio',
+#             'role',)
+#         read_only_fields = ('role',)
 
 
 class CommentsSerializer(serializers.ModelSerializer):

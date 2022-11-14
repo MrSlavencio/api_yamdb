@@ -1,9 +1,6 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.tokens import default_token_generator as tok_gen
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from .validators import username_not_me_validator
 
 
 class User(AbstractUser):
@@ -26,8 +23,6 @@ class User(AbstractUser):
             'Только буквы, цифры или символы @/./+/-/_.'
             'Не может быть <me>.'
         ),
-        validators=[AbstractUser.username_validator,
-                    username_not_me_validator, ],
         error_messages={
             'unique': _("Пользователь с таким именем уже существует"),
         },
@@ -61,8 +56,6 @@ class User(AbstractUser):
         verbose_name_plural = _('Пользователи')
 
     def save(self, *args, **kwargs):
-        confirmation_code = tok_gen.make_token(self)
-        self.confirmation_code = confirmation_code
         if self.is_admin:
             self.is_staff = True
         super(User, self).save(*args, **kwargs)
