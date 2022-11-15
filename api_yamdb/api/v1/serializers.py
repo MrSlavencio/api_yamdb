@@ -90,11 +90,14 @@ class RegisrationSerializer(serializers.ModelSerializer):
             raise ValidationError(
                 'Имя пользователя не может быть "me".'
             )
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError(
+                "Пользователь с таким username уже существует.")
         return value
 
     def validate_email(self, value):
         lower_email = value.lower()
-        if User.objects.filter(email__iexact=lower_email).exists():
+        if User.objects.filter(email=lower_email).exists():
             raise serializers.ValidationError(
                 "Пользователь с таким email уже существует.")
         return lower_email

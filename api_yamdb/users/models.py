@@ -55,11 +55,6 @@ class User(AbstractUser):
         verbose_name = _('Пользователь')
         verbose_name_plural = _('Пользователи')
 
-    def save(self, *args, **kwargs):
-        if self.is_admin:
-            self.is_staff = True
-        super(User, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.username
 
